@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Hand : MonoBehaviour
+public class Hand : MonoBehaviour // THE SCRIPT TAKE OBJECT AND ADD TO INVENTORY 
 {
 
     [SerializeField] Camera cam;
@@ -19,7 +19,7 @@ public class Hand : MonoBehaviour
     public Rigidbody grabbedRB;
     GameObject grabbedOB;
 
-    public GameObject SimpleAxePref;
+    public GameObject SimpleAxePref; // ADD GAMEOBJECT IF YOU WANT ADD ITEM
 
 
 
@@ -37,16 +37,16 @@ public class Hand : MonoBehaviour
                 grabbedRB.isKinematic = false;
                 grabbedRB = null;
             }
-            if (Input.GetKeyDown("e"))
+            if (Input.GetKeyDown("e")) // CHANGE KEY FOR OPEN THE INVENTORY BOTH IN THE INVENTORY SCRIPT
             {
                 for(int i = 0; i < 9; i++)
                 {
                     if (inventory.InventorySlot[i] == null)
                     {
                         
-                        if(grabbedOB.tag == "axe")
+                        if(grabbedOB.tag == "axe") // IF YOU WANT ADD OBJECT ADD IF HER AND CHANGE TAG WITH YOU ITEM TAG
                         {
-                            inventory.InventorySlot[i] = Instantiate(SimpleAxePref, HandT);
+                            inventory.InventorySlot[i] = Instantiate(SimpleAxePref, HandT); // HANDT IS THE POSITION TO SPAWN ITEM IN THE INVENTORY
                             inventory.InventorySlot[i].tag = "axe";
                         }
                         Destroy(grabbedOB);

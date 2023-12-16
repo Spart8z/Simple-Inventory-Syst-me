@@ -22,7 +22,8 @@ public class Inventory : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetButtonDown("Fire3"))
+        //INPUTE 
+        if (Input.GetButtonDown("Fire3")) // OPEN INVENTORY
         {
             InventoryUI.SetActive(!InventoryUI.activeSelf);
         }
@@ -65,11 +66,11 @@ public class Inventory : MonoBehaviour
         }
         else
         {
-            Selector.position = UIInventorySlot[slotSelection].transform.position;
-            itemTakeUI.sprite = UIInventorySlot[slotSelection].GetComponent<Image>().sprite;
+            Selector.position = UIInventorySlot[slotSelection].transform.position; //PRINT THE SLECTORE ON ITEM SLOT 
+            itemTakeUI.sprite = UIInventorySlot[slotSelection].GetComponent<Image>().sprite; //PRINT THE SLECTORE ON ITEM SLOT 
             InventoryUpdate();
         }
-        if (slotSelection != 0 && HandRB != null)
+        if (slotSelection != 0 && HandRB != null) // FIX BUG WITH THE TAKE OBJECT AND CHANGE SLOT SLECTIONNE
         {
             hand.grabbedRB = null;
             HandRB.isKinematic = false;
@@ -78,7 +79,7 @@ public class Inventory : MonoBehaviour
     }
     void InventoryUpdate()
     {
-        for (int i = 0; i <= 8; i++)
+        for (int i = 0; i <= 8; i++) // ACTIVE AND DISABLE OBJECT 
         {
             if (InventorySlot[i] != null && i != slotSelection)
             {
@@ -90,11 +91,11 @@ public class Inventory : MonoBehaviour
             }
             continue;
         }
-        for (int i = 0; i <= 8; i++)
+        for (int i = 0; i <= 8; i++) // ADD OBJECT IN TO THE INVENTORY 
         {
-            if (InventorySlot[i] != null && InventorySlot[i].tag == "axe")
+            if (InventorySlot[i] != null && InventorySlot[i].tag == "axe") // ADD IF IF YOU ADD ITEM
             {
-                UIInventorySlot[i].GetComponent<Image>().sprite = itemIcon[1];
+                UIInventorySlot[i].GetComponent<Image>().sprite = itemIcon[1]; // SELECT YOUR ICON IN ITEM ICON 
             }
             continue;
         }
