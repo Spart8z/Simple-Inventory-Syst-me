@@ -85,7 +85,7 @@ public class Inventory : MonoBehaviour
             {
                 InventorySlot[i].SetActive(false);
             }
-            else
+            else if(InventorySlot[i] != null)
             {
                 InventorySlot[slotSelection].SetActive(true);
             }
