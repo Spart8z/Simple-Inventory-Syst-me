@@ -6,7 +6,7 @@ public class Hand : MonoBehaviour // THE SCRIPT TAKE OBJECT AND ADD TO INVENTORY
 {
 
     [SerializeField] Camera cam;
-    [SerializeField] float maxGrabDistance = 10f;
+    [SerializeField] float maxGrabDistance;
 
     [SerializeField] Transform objectHolder;
 
@@ -21,23 +21,11 @@ public class Hand : MonoBehaviour // THE SCRIPT TAKE OBJECT AND ADD TO INVENTORY
 
     public GameObject SimpleAxePref; // ADD GAMEOBJECT IF YOU WANT ADD ITEM
 
-
-
-
-    void FixedUpdate()
+    void Update()
     {
         if (grabbedRB)
         {
-            grabbedOB.transform.position = objectHolder.position;
-            grabbedOB.transform.rotation = Player.rotation;
-
-
-            if (Input.GetMouseButtonDown(1))
-            {
-                grabbedRB.isKinematic = false;
-                grabbedRB = null;
-            }
-            if (Input.GetKeyDown("e")) // CHANGE KEY FOR OPEN THE INVENTORY BOTH IN THE INVENTORY SCRIPT
+            if (Input.GetKeyDown("x")) // CHANGE KEY FOR OPEN THE INVENTORY BOTH IN THE INVENTORY SCRIPT
             {
                 for(int i = 0; i < 9; i++)
                 {
@@ -54,13 +42,17 @@ public class Hand : MonoBehaviour // THE SCRIPT TAKE OBJECT AND ADD TO INVENTORY
                     }
                 }
             }
+            grabbedOB.transform.parent = objectHolder.transform;
+        }
+        if (grabbedOB != null && Input.GetMouseButtonDown(1))
+        {
+            dropGameObject();
         }
         if (Input.GetMouseButtonDown(0))
         {
             if (grabbedRB)
             {
-                grabbedRB.isKinematic = false;
-                grabbedRB = null;
+                dropGameObject();
             }
             else
             {
@@ -70,13 +62,19 @@ public class Hand : MonoBehaviour // THE SCRIPT TAKE OBJECT AND ADD TO INVENTORY
                 {
                     grabbedRB = hit.collider.gameObject.GetComponent<Rigidbody>();
                     grabbedOB = hit.collider.gameObject;
-                    inventory.HandRB = grabbedRB;
                     if (grabbedRB)
                     {
                         grabbedRB.isKinematic = true;
-                    }
+                        inventory.HandRB = grabbedRB;
+                    } 
                 }
             }
         }
+    }
+    void dropGameObject()
+    {
+        grabbedOB.transform.parent = null;
+        grabbedRB.isKinematic = false;
+        grabbedRB = null;
     }
 }
