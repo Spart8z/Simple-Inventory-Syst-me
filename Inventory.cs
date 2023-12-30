@@ -9,90 +9,43 @@ public class Inventory : MonoBehaviour
     public Rigidbody HandRB;
 
     public Animator AnimInv;
-    public Image itemTakeUI;
 
-    public Transform Selector;
+    public GameObject[] InventorySlot; // ARRAY OF ITEMS (ADD HAND IN FIRST SLOT)
+
     public int slotSelection = 0;
 
-    public GameObject[] InventorySlot; // ARRAY OF ITEMS
+    public Transform Selector;
+    public Image itemTakeUI;
+        public Sprite[] itemIcon; // SELECTED ICONS
     public GameObject[] UIInventorySlot; // SLOT POSITIONS
-    public Sprite[] itemIcon; // SELECTED ICONS
 
-    public Axe axe;
+    public Axe axe; // PREFAB OBJECT
 
     void Update()
     {
-        // INPUT HANDLING
-        if (Input.GetKeyDown("1"))
+        for (int i = 1; i <= 9; i++) // INPUTE [BY CHATGPT]
         {
-            slotSelection = 0;
-            StartCoroutine("OpenInv");
+            if (Input.GetKeyDown(i.ToString()))
+            {
+                slotSelection = i - 1; // Adjust index to start from 0
+                StartCoroutine("OpenInv");
+                Update_Inventory();
+                break;
+            }
         }
-        else if (Input.GetKeyDown("2"))
-        {
-            slotSelection = 1;
-            StartCoroutine("OpenInv");
-        }
-        else if (Input.GetKeyDown("3"))
-        {
-            slotSelection = 2;
-            StartCoroutine("OpenInv");
-        }
-        else if (Input.GetKeyDown("4"))
-        {
-            slotSelection = 3;
-            StartCoroutine("OpenInv");
-        }
-        else if (Input.GetKeyDown("5"))
-        {
-            slotSelection = 4;
-            StartCoroutine("OpenInv");
-        }
-        else if (Input.GetKeyDown("6"))
-        {
-            slotSelection = 5;
-            StartCoroutine("OpenInv");
-        }
-        else if (Input.GetKeyDown("7"))
-        {
-            slotSelection = 6;
-            StartCoroutine("OpenInv");
-        }
-        else if (Input.GetKeyDown("8"))
-        {
-            slotSelection = 7;
-            StartCoroutine("OpenInv");
-        }
-        else if (Input.GetKeyDown("9"))
-        {
-            slotSelection = 8;
-            StartCoroutine("OpenInv");
-        }
-        else
-        {
-            Selector.position = UIInventorySlot[slotSelection].transform.position; // POSITION THE SELECTOR ON THE ITEM SLOT
-            itemTakeUI.sprite = UIInventorySlot[slotSelection].GetComponent<Image>().sprite; // SET THE SELECTED ITEM ICON
-            InventoryUpdate();
-            if (Input.GetAxis("Mouse ScrollWheel") > 0f && slotSelection < 8)
+        if (Input.GetAxis("Mouse ScrollWheel") > 0f && slotSelection < 8)
             {
                 slotSelection += 1;
                 StartCoroutine("OpenInv");
-            }
-            if (Input.GetAxis("Mouse ScrollWheel") < 0f && slotSelection > 0)
+            }else if (Input.GetAxis("Mouse ScrollWheel") < 0f && slotSelection > 0)
             {
                 slotSelection -= 1;
                 StartCoroutine("OpenInv");
             }
-        }
-        if (slotSelection != 0 && HandRB != null) // FIX BUG WITH TAKING OBJECT AND CHANGING SLOT SELECTION
-        {
-            hand.grabbedRB = null;
-            HandRB.isKinematic = false;
-            HandRB = null;
-        }
+            Selector.position = UIInventorySlot[slotSelection].transform.position; // POSITION THE SELECTOR ON THE ITEM SLOT
+            itemTakeUI.sprite = UIInventorySlot[slotSelection].GetComponent<Image>().sprite; // SET THE SELECTED ITEM ICON
     }
-
-    void InventoryUpdate()
+    public void Update_Inventory()
     {
         for (int i = 0; i <= 8; i++) // ACTIVATE AND DEACTIVATE OBJECTS
         {
@@ -114,11 +67,18 @@ public class Inventory : MonoBehaviour
             }
             continue;
         }
+        if (slotSelection != 0 && HandRB != null) // FIX BUG WITH TAKING OBJECT AND CHANGING SLOT SELECTION
+        {
+            hand.grabbedOB.transform.parent = null;
+            hand.grabbedRB = null;
+            HandRB.isKinematic = false;
+            HandRB = null;
+        }
+        axe.takeAxePerformInInventory();
     }
-
     IEnumerator OpenInv()
     {
-        axe.takeAxePerformInInventory();
+        Update_Inventory();
         AnimInv.SetBool("Open", true);
         yield return new WaitForSeconds(5);
         AnimInv.SetBool("Open", false);

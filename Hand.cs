@@ -6,7 +6,7 @@ public class Hand : MonoBehaviour // THE SCRIPT TAKE OBJECT AND ADD TO INVENTORY
 {
 
     [SerializeField] Camera cam;
-    [SerializeField] float maxGrabDistance;
+    [SerializeField] int maxGrabDistance;
 
     [SerializeField] Transform objectHolder;
 
@@ -14,10 +14,10 @@ public class Hand : MonoBehaviour // THE SCRIPT TAKE OBJECT AND ADD TO INVENTORY
 
     [SerializeField] Inventory inventory;
 
-    [SerializeField] Transform HandT;
+    [SerializeField] Transform TakeObjectPos;
 
     public Rigidbody grabbedRB;
-    GameObject grabbedOB;
+    public GameObject grabbedOB;
 
     public GameObject SimpleAxePref; // ADD GAMEOBJECT IF YOU WANT ADD ITEM
 
@@ -29,14 +29,15 @@ public class Hand : MonoBehaviour // THE SCRIPT TAKE OBJECT AND ADD TO INVENTORY
             {
                 for(int i = 0; i < 9; i++)
                 {
-                    if (inventory.InventorySlot[i] == null)
+                    if (inventory.InventorySlot[i] == null && i != 0) // SLOT 1 ONLY NULL
                     {
                         
                         if(grabbedOB.tag == "axe") // IF YOU WANT ADD OBJECT ADD IF HER AND CHANGE TAG WITH YOU ITEM TAG
                         {
-                            inventory.InventorySlot[i] = Instantiate(SimpleAxePref, HandT); // HANDT IS THE POSITION TO SPAWN ITEM IN THE INVENTORY
+                            inventory.InventorySlot[i] = Instantiate(SimpleAxePref, TakeObjectPos.parent); // TakeObjectPos IS THE POSITION TO SPAWN ITEM IN THE INVENTORY
                             inventory.InventorySlot[i].tag = "axe";
                         }
+                        inventory.Update_Inventory();
                         Destroy(grabbedOB);
                         break;
                     }
@@ -50,7 +51,7 @@ public class Hand : MonoBehaviour // THE SCRIPT TAKE OBJECT AND ADD TO INVENTORY
         }
         if (Input.GetMouseButtonDown(0))
         {
-            if (grabbedRB)
+            if (grabbedRB != null)
             {
                 dropGameObject();
             }
@@ -60,18 +61,25 @@ public class Hand : MonoBehaviour // THE SCRIPT TAKE OBJECT AND ADD TO INVENTORY
                 Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f));
                 if (Physics.Raycast(ray, out hit, maxGrabDistance))
                 {
-                    grabbedRB = hit.collider.gameObject.GetComponent<Rigidbody>();
-                    grabbedOB = hit.collider.gameObject;
-                    if (grabbedRB)
+                    if (!hit.collider.CompareTag("Untagged"))
                     {
-                        grabbedRB.isKinematic = true;
-                        inventory.HandRB = grabbedRB;
-                    } 
+                        grabbedRB = hit.collider.gameObject.GetComponent<Rigidbody>();
+                        grabbedOB = hit.collider.gameObject;
+                        if (grabbedRB)
+                        {
+                            grabbedRB.isKinematic = true;
+                            inventory.HandRB = grabbedRB;
+                        }
+                    }
+                    else
+                    {
+                        Debug.Log("Not catchable");
+                    }
                 }
             }
         }
     }
-    void dropGameObject()
+    public void dropGameObject()
     {
         grabbedOB.transform.parent = null;
         grabbedRB.isKinematic = false;
