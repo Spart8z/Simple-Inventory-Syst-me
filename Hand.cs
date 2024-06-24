@@ -4,21 +4,20 @@ using UnityEngine;
 
 public class Hand : MonoBehaviour // THE SCRIPT TAKE OBJECT AND ADD TO INVENTORY 
 {
-
     [SerializeField] Camera cam;
+
     [SerializeField] int maxGrabDistance;
 
     [SerializeField] Transform objectHolder;
-
     [SerializeField] Transform Player;
 
-    [SerializeField] Inventory inventory;
 
+    [SerializeField] Inventory inventory;
     [SerializeField] Transform TakeObjectPos;
 
     public Rigidbody grabbedRB;
-    public GameObject grabbedOB;
 
+    public GameObject grabbedOB;
     public GameObject SimpleAxePref; // ADD GAMEOBJECT IF YOU WANT ADD ITEM
 
     void Update()
@@ -29,13 +28,13 @@ public class Hand : MonoBehaviour // THE SCRIPT TAKE OBJECT AND ADD TO INVENTORY
             {
                 for(int i = 0; i < 9; i++)
                 {
-                    if (inventory.InventorySlot[i] == null && i != 0) // SLOT 1 ONLY NULL
+                    if (inventory.UIInventorySlot[i] == null && i != 0) // SLOT 1 ONLY NULL
                     {
                         
                         if(grabbedOB.tag == "axe") // IF YOU WANT ADD OBJECT ADD IF HER AND CHANGE TAG WITH YOU ITEM TAG
                         {
-                            inventory.InventorySlot[i] = Instantiate(SimpleAxePref, TakeObjectPos.parent); // TakeObjectPos IS THE POSITION TO SPAWN ITEM IN THE INVENTORY
-                            inventory.InventorySlot[i].tag = "axe";
+                            inventory.UIInventorySlot[i] = Instantiate(SimpleAxePref, TakeObjectPos.parent); // TakeObjectPos IS THE POSITION TO SPAWN ITEM IN THE INVENTORY
+                            inventory.UIInventorySlot[i].tag = "axe";
                         }
                         inventory.Update_Inventory();
                         Destroy(grabbedOB);
@@ -45,11 +44,7 @@ public class Hand : MonoBehaviour // THE SCRIPT TAKE OBJECT AND ADD TO INVENTORY
             }
             grabbedOB.transform.parent = objectHolder.transform;
         }
-        if (grabbedOB != null && Input.GetMouseButtonDown(1))
-        {
-            dropGameObject();
-        }
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(1))
         {
             if (grabbedRB != null)
             {
@@ -82,6 +77,7 @@ public class Hand : MonoBehaviour // THE SCRIPT TAKE OBJECT AND ADD TO INVENTORY
     public void dropGameObject()
     {
         grabbedOB.transform.parent = null;
+        grabbedOB = null;
         grabbedRB.isKinematic = false;
         grabbedRB = null;
     }

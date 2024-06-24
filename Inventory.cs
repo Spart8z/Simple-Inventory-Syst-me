@@ -10,20 +10,18 @@ public class Inventory : MonoBehaviour
 
     public Animator AnimInv;
 
-    public GameObject[] InventorySlot; // ARRAY OF ITEMS (ADD HAND IN FIRST SLOT)
-
     public int slotSelection = 0;
 
     public Transform Selector;
     public Image itemTakeUI;
-        public Sprite[] itemIcon; // SELECTED ICONS
+    public Sprite[] itemIcon; // SELECTED ICONS
     public GameObject[] UIInventorySlot; // SLOT POSITIONS
 
-    public Axe axe; // PREFAB OBJECT
+    //public Axe axe; // PREFAB OBJECT
 
     void Update()
     {
-        for (int i = 1; i <= 9; i++) // INPUTE [BY CHATGPT]
+        for (int i = 1; i <= 9; i++) // INPUTE PULL
         {
             if (Input.GetKeyDown(i.ToString()))
             {
@@ -47,34 +45,19 @@ public class Inventory : MonoBehaviour
     }
     public void Update_Inventory()
     {
-        for (int i = 0; i <= 8; i++) // ACTIVATE AND DEACTIVATE OBJECTS
-        {
-            if (InventorySlot[i] != null && i != slotSelection)
-            {
-                InventorySlot[i].SetActive(false);
-            }
-            else if (InventorySlot[i] != null)
-            {
-                InventorySlot[slotSelection].SetActive(true);
-            }
-            continue;
-        }
         for (int i = 0; i <= 8; i++) // ADD OBJECTS TO THE INVENTORY
         {
-            if (InventorySlot[i] != null && InventorySlot[i].tag == "axe") // ADD CONDITIONS IF YOU ADD MORE ITEM TYPES
+            if (UIInventorySlot[i] != null && UIInventorySlot[i].tag == "axe") // ADD CONDITIONS IF YOU ADD MORE ITEM TYPES
             {
                 UIInventorySlot[i].GetComponent<Image>().sprite = itemIcon[1]; // SET THE ICON FOR THE ITEM
             }
             continue;
         }
-        if (slotSelection != 0 && HandRB != null) // FIX BUG WITH TAKING OBJECT AND CHANGING SLOT SELECTION
+        if (slotSelection != 0 && hand.grabbedRB != null) // FIX BUG WITH TAKING OBJECT AND CHANGING SLOT SELECTION
         {
-            hand.grabbedOB.transform.parent = null;
-            hand.grabbedRB = null;
-            HandRB.isKinematic = false;
-            HandRB = null;
+            hand.dropGameObject();
         }
-        axe.takeAxePerformInInventory();
+        //axe.takeAxePerformInInventory();
     }
     IEnumerator OpenInv()
     {
