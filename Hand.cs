@@ -1,24 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Hand : MonoBehaviour // THE SCRIPT TAKE OBJECT AND ADD TO INVENTORY 
 {
-    [SerializeField] Camera cam;
 
+    [SerializeField] Camera cam;
     [SerializeField] int maxGrabDistance;
 
-    [SerializeField] Transform objectHolder;
+    public Transform objectHolder;
+    [SerializeField] Transform TakeObjectPos;
     [SerializeField] Transform Player;
 
-
     [SerializeField] Inventory inventory;
-    [SerializeField] Transform TakeObjectPos;
 
     public Rigidbody grabbedRB;
-
     public GameObject grabbedOB;
-    public GameObject SimpleAxePref; // ADD GAMEOBJECT IF YOU WANT ADD ITEM
 
     void Update()
     {
@@ -26,23 +24,34 @@ public class Hand : MonoBehaviour // THE SCRIPT TAKE OBJECT AND ADD TO INVENTORY
         {
             if (Input.GetKeyDown("x")) // CHANGE KEY FOR OPEN THE INVENTORY BOTH IN THE INVENTORY SCRIPT
             {
-                for(int i = 0; i < 9; i++)
+                for (int i = 0; i < 9; i++)
                 {
-                    if (inventory.UIInventorySlot[i] == null && i != 0) // SLOT 1 ONLY NULL
+                    if (inventory.Stockage[i] == null && i != 0) // SLOT 1 ONLY NULL
                     {
-                        
-                        if(grabbedOB.tag == "axe") // IF YOU WANT ADD OBJECT ADD IF HER AND CHANGE TAG WITH YOU ITEM TAG
+
+                        if (grabbedOB.tag == "Portable object")
                         {
-                            inventory.UIInventorySlot[i] = Instantiate(SimpleAxePref, TakeObjectPos.parent); // TakeObjectPos IS THE POSITION TO SPAWN ITEM IN THE INVENTORY
-                            inventory.UIInventorySlot[i].tag = "axe";
+                            inventory.Stockage[i] = Instantiate(grabbedOB, TakeObjectPos); // TakeObjectPos IS THE POSITION TO SPAWN ITEM IN THE INVENTORY
+                            inventory.Stockage[i].tag = "Portable object";
+                            inventory.Stockage[i].GetComponent<BoxCollider>().enabled = false;
+                            Destroy(grabbedOB);
                         }
                         inventory.Update_Inventory();
-                        Destroy(grabbedOB);
                         break;
                     }
                 }
             }
-            grabbedOB.transform.parent = objectHolder.transform;
+            if(grabbedOB != null)
+            {
+                grabbedOB.transform.parent = objectHolder.transform;
+            }
+        }
+        else
+        {
+            if (Input.GetKeyDown("x"))
+            {
+                inventory.DropObjectOfInventory();
+            }
         }
         if (Input.GetMouseButtonDown(1))
         {
@@ -63,7 +72,6 @@ public class Hand : MonoBehaviour // THE SCRIPT TAKE OBJECT AND ADD TO INVENTORY
                         if (grabbedRB)
                         {
                             grabbedRB.isKinematic = true;
-                            inventory.HandRB = grabbedRB;
                         }
                     }
                     else
@@ -77,8 +85,8 @@ public class Hand : MonoBehaviour // THE SCRIPT TAKE OBJECT AND ADD TO INVENTORY
     public void dropGameObject()
     {
         grabbedOB.transform.parent = null;
-        grabbedOB = null;
         grabbedRB.isKinematic = false;
         grabbedRB = null;
+        grabbedOB = null;
     }
 }
